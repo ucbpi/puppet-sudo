@@ -1,0 +1,35 @@
+# This file is managed by puppet in module 'sudo'
+# File: sudo/sudoers.el5
+#
+# Changes made to this file will be terminated with extreme prejudice.
+
+
+# Defaults specification
+
+#
+# Disable "ssh hostname sudo <cmd>", because it will show the password in clear.
+#         You have to run "ssh -t hostname sudo <cmd>".
+#
+Defaults    requiretty
+
+#
+# Refuse to run if unable to disable echo on the tty. This setting should also 
+# be changed in order to be able to use sudo without a tty. See requiretty above
+#
+Defaults   !visiblepw
+
+Defaults    env_reset
+Defaults    env_keep = "COLORS DISPLAY HOSTNAME HISTSIZE INPUTRC KDEDIR \
+                        LS_COLORS MAIL PS1 PS2 QTDIR USERNAME \
+                        LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION \
+                        LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC \
+                        LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS \
+                        _XKB_CHARSET XAUTHORITY"
+
+# always allow root to run all the commands
+root	ALL=(ALL) 	ALL
+
+# the following line is actually not a comment, but a directive to include
+# everything in the /etc/sudoers.d directory.  This is where our main config
+# will exist.
+#includedir /etc/sudoers.d
