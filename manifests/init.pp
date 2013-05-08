@@ -1,44 +1,61 @@
-# == Class: sudo
-#
-# Manages sudoers configuration on a host. 
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
-#
-# === Examples
-#
-#  class { sudo:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ]
-#  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2011 Your name here, unless otherwise noted.
-#
 class sudo {
   include sudo::package, sudo::config
 
+  #######
+  # Set some parameters based on osfamily and version
+  #
+  case $::osfamily {
+
+    # RedHat family OSes
+    'RedHat':
+      {
+        $sudoers_d_dir = '/etc/sudoers.d'
+        $sudoers = '/etc/sudoers'
+
+        case $::operatingsystemrelease {
+
+          # RedHat 5.x family OSes
+          /^5\.[0-9]+$/:
+            {
+              $sudoers_erb = 'sudo/sudoers.el5.erb'
+            }
+
+          # RedHat 6.x family OSes
+          /^6\.[0-9]+$/:
+            {
+              $sudoers_erb = 'sudo/sudoers.el6.erb'
+            }
+
+          # Other RedHat OSes
+          default:
+            {
+              $err_rhel_arr = [
+                'Class[sudo]',
+                ':',
+                "Unsupported Redhat version - ${::operatingsystemrelease}"
+              ]
+              $err_rhel = join( $err_rhel_arr, ' ' )
+              fail( $err_rhel )
+          }
+        }
+      }
+
+    # All other OS families
+    default:
+      {
+        fail( "Class[sudo] : Unsupported OS family - ${::osfamily}" )
+      }
+  }
+
   $default = {
-    'target'   => 'puppet_sudoers',
+    'target' => 'puppet_sudoers',
+  }
+
+  $order = {
+    'user_alias'  => '10',
+    'runas_alias' => '30',
+    'host_alias'  => '50',
+    'cmnd_alias'  => '70',
+    'entry'       => '90',
   }
 }
