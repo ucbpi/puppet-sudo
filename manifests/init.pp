@@ -35,42 +35,10 @@
 #
 # Copyright 2011 Your name here, unless otherwise noted.
 #
-class sudo ( $sudoers_template = 'UNDEF' ) {
-    include sudo::params
+class sudo {
+  include sudo::package, sudo::config
 
-    #
-    # Parameter Validation
-    validate_string( $sudoers_template )
-
-    #
-    # Parameter Logic
-    $real_sudoers_template = $sudoers_template ? {
-        'UNDEF' => $sudo::params::sudoers_template,
-        default => $sudoers_template,
-    }
-
-    #
-    # Resource Declarations 
-
-    # sudo class handles ensure sudo is installed
-    package{ $sudo::params::packages: ensure => 'installed' }
-
-    # create our sudoers file
-    file { $sudo::params::sudoers:
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0440',
-        content => template($real_sudoers_template),
-        ensure  => 'file',
-    }
-    
-    file{ $sudo::params::sudoers_d:
-        owner        => 'root',
-        group        => 'root',
-        mode         => '0440',
-        ensure       => 'directory',
-        recurse      => true,
-        purge        => true,
-        recurselimit => '1',
-    }
+  $default = {
+    'target'   => 'puppet_sudoers',
+  }
 }
