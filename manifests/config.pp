@@ -1,4 +1,6 @@
 class sudo::config {
+  include sudo
+
   # create our sudoers file
   file { '/etc/sudoers':
     ensure  => file,
