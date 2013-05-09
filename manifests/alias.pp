@@ -62,6 +62,9 @@ define sudo::alias (  $type = undef,
     # process a user_alias
     'user':
       {
+        if is_array( $value ) { $value_r = $value }
+        else { $value_r = split( $value, '[,|:]' ) }
+
         $erb = 'User_Alias <%= alias_name_r %> = <%= value_r.join(\', \') %>'
         $frag = "sudoers_${target}_user_alias_${alias_name_r}"
         $order_d = $sudo::order[user_alias]
