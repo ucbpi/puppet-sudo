@@ -1,3 +1,2 @@
-<%= @real_users.join(",") -%> ALL = <% if @real_nopasswd -%>
-NOPASSWD: <% end -%><%= @real_cmnds.join(",") %>
-
+<%= @user_r.join(",") -%> ALL = <% if @nopasswd_r -%>
+NOPASSWD: <% end -%><%= @cmnd_r.join(",") %>
