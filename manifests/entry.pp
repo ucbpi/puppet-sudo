@@ -3,70 +3,49 @@
 #    nopasswd => true,
 #    }
 define sudo::entry ( $cmnd = 'ALL',
-                     $cmnds = [ ],
-                     $user = 'UNDEF',
-                     $users = [ ],
-                     $nopasswd = false,
-                     $target = 'UNDEF', # sudoers file target
-                     $order = '-1' ) # rule order
-{
-    include sudo::params
+                      $user = undef,
+                      $nopasswd = false,
+                      $target = undef,
+                      $order = undef
+) {
 
-    #
-    # Parameter Validation
-    validate_array( $users )
-    validate_array( $cmnds )
-    validate_re( $user, '^(%?[a-z]+|UNDEF)$' )
+  if is_array( $cmnd ) {
     validate_string( $cmnd )
-    validate_bool( $nopasswd )
-    validate_re( $target, '^(\w+|UNDEF)$' )
-    validate_re( $order, '^(?:[0-9]{3}|-1)$' ) # 0-999, -1 (default)
+    $cmnd_r = $cmnd
+  } else {
+    $cmnd_r = split( $cmnd, ',' )
+  }
 
-    #
-    # Parameter Logic
-    # users array takes precedence over user string. dont judge the
-    # formatting. it's beautiful.
-    if size($users) > 0 
-    { $real_users = $users }
-    elsif size($user) > 0 and $user != 'UNDEF'
-    { $real_users = [ "$user" ] }
-    elsif size($users) > 0 and $user != 'UNDEF'
-    { warning("\$user and \$users both specified. \$user ignored") }
-    else { fail("you must specify either \$user or \$users") }
+  if is_array( $user ) {
+    validate_string( $user )
+    $user_r = $user
+  } else {
+    $user_r = split( $user, ',' )
+  }
 
-    # same thing here, but with commands
-    if size($cmnds) > 0  # use cmnds array if populated
-    { $real_cmnds = $cmnds }
-    elsif size($cmnd) > 0 and $cmnd != 'UNDEF'  # use cmnd string instead
-    { $real_cmnds = [ "$cmnd" ] }
+  validate_bool( $nopasswd )
 
-    if size($cmnds) > 0 and $cmnd != 'UNDEF'
-    { warning("\$cmnd and \$cmnds both specified. \$cmnd ignored") }
+  $target_r = $target ? {
+    undef   => $sudo::default[target],
+    default => $target,
+  }
 
-    if size($cmnds) == 0 and ( $cmnd == 'UNDEF' or $cmnd == '' )
-    { fail("you must specify either \$cmnd or \$cmnds") }
+  # use a default order, if not given a valid one
+  $order_r = $order ? {
+    undef    => $sudo::order[entry],
+    default => lead($order, 2),
+  }
+  validate_re( $order_r, '^[0-9]{2}$' )
 
-    # use a default target, if not given a valid one
-    $real_target = $target ? { 
-        'UNDEF' => $sudo::params::default_sudoers,
-        default => $target
-    }
+  $nopasswd_r = $nopasswd
 
-    # use a default order, if not given a valid one
-    $real_order = $order ? {
-        '-1'    => $sudo::params::user_alias_ord,
-        default => $order 
-    }
+  #
+  # Resource Declarations
+  if !defined(Sudo::Target[$target_r]) { sudo::target{ $target_r: } }
 
-    $real_nopasswd = $nopasswd
-
-    #
-    # Resource Declarations
-    if !defined(Sudo::Target[$real_target]) {sudo::target{ $real_target: }}
-
-    concat::fragment { "sudoers_${real_target}_ca_${name}":
-        order   => $real_order,
-        content => template('sudo/entry.erb'),
-        target  => $real_target,
-    }
+  concat::fragment { "sudoers_${target_r}_entry_${name}":
+    order   => $order_r,
+    content => template('sudo/entry.erb'),
+    target  => $target_r,
+  }
 }
