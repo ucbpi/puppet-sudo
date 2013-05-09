@@ -1,5 +1,4 @@
 class sudo {
-  include sudo::package, sudo::config
 
   #######
   # Set some parameters based on osfamily and version
@@ -46,6 +45,8 @@ class sudo {
         fail( "Class[sudo] : Unsupported OS family - ${::osfamily}" )
       }
   }
+
+  include sudo::package, sudo::config
 
   $default = {
     'target' => 'puppet_sudoers',
