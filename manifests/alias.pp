@@ -43,7 +43,7 @@ define sudo::alias (  $type = undef,
         else { $value_r = split( $value, '[,|:]' ) }
 
 
-        $erb = 'Host_Alias <% @alias_name_r -%> = <%= @hosts_r.join(\',\') %>'
+        $erb = 'Host_Alias <% alias_name_r -%> = <%= value_r.join(\', \') %>'
         $frag = "sudoers_${target_r}_host_alias_${alias_name_r}"
         $order_d = $sudo::order[host_alias]
       }
@@ -54,7 +54,7 @@ define sudo::alias (  $type = undef,
         if is_array( $value ) { $value_r = $value }
         else { $value_r = split( $value, '[,|:]' ) }
 
-        $erb = 'Cmnd_Alias <%= @name %> = <%= @cmnds.join(\',\') %>'
+        $erb = 'Cmnd_Alias <%= alias_name_r %> = <%= value_r.join(\', \') %>'
         $frag = "sudoers_${target_r}_cmnd_alias_${alias_name_r}"
         $order_d = $sudo::order[cmnd_alias]
       }
@@ -62,7 +62,7 @@ define sudo::alias (  $type = undef,
     # process a user_alias
     'user':
       {
-        $erb = 'User_Alias <%= @name %> = <%= @users.join(\',\') %>'
+        $erb = 'User_Alias <%= alias_name_r %> = <%= value_r.join(\', \') %>'
         $frag = "sudoers_${target}_user_alias_${alias_name_r}"
         $order_d = $sudo::order[user_alias]
       }
@@ -90,7 +90,7 @@ define sudo::alias (  $type = undef,
 
   concat::fragment { $frag:
       order   => $order_r,
-      content => inline_template($erb),
+      content => inline_template("${erb}\n"),
       target  => $target_r,
   }
 }
