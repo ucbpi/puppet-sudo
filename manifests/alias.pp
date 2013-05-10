@@ -9,10 +9,6 @@
 #
 # the type of alias to create. Can be one of user, cmnd or host.
 #
-# [*name*]
-#
-# the name of the alias.  name must be uppercase.
-#
 # [*value*]
 #
 # the value of the alias depends on the type above.
@@ -37,7 +33,6 @@
 # configuration, and should not be needed in most cases.
 #
 define sudo::alias (  $type = undef,
-                      $name = $title,
                       $value = undef,
                       $target = undef,
                       $order = undef
