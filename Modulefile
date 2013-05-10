@@ -1,5 +1,5 @@
 name    'arusso-sudo'
-version '0.0.2'
+version '0.0.3'
 source 'https://github.com/arusso23/puppet-sudo'
 author 'arusso'
 license 'none'
