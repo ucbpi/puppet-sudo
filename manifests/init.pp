@@ -1,3 +1,8 @@
+# == Class: sudo
+#
+# Sudo management class. This class does not need to be called directly, as the
+# sudo::entry and sudo::alias defines take care of including it if you dont.
+#
 class sudo {
 
   #######

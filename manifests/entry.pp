@@ -1,13 +1,41 @@
-# sudo::entry{ 'ossunix-root':
-#    user       => '%ossunix',
-#    nopasswd => true,
-#    }
+# == Define: sudo::entry
+#
+# Defines a sudo rule
+#
+# === Parameters:
+#
+# [*cmnd*]
+#
+# a comma separated string or array of commands that the user should be allowed
+# to execute.  paths must be fully qualified for all non-builtin commands.
+#
+# [*user*]
+#
+# an array of user or groups (or any combination) that may run these commands
+#
+# [*nopasswd*]
+#
+# if set to true, the user specified will not need to enter their password to
+# run sudo commands. default is false.
+#
+# [*target*]
+#
+# file target to put the sudo rules in within the sudoers.d directory.  defaults
+# to puppet_sudoers.
+#
+# [*order*]
+#
+# the order within the file that the rule should appear.  not likely to be
+# needed, but if you think you might, take a look at the init.pp inline
+# documentation for more info.
+#
 define sudo::entry ( $cmnd = 'ALL',
                       $user = undef,
                       $nopasswd = false,
                       $target = undef,
                       $order = undef
 ) {
+  include sudo
 
   if is_array( $cmnd ) {
     validate_string( $cmnd )

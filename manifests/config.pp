@@ -1,3 +1,8 @@
+# == Class: sudo::config
+#
+# Sets up our sudo configuration files for us, and ensures our sudoers.d
+# directory is prepared for use. This class should not be called directly.
+#
 class sudo::config {
   include sudo
 

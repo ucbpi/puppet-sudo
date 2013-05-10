@@ -1,3 +1,41 @@
+# == Define: sudo::alias
+#
+# Sets up a sudo alias of either user (User_Alias), cmnd (Cmnd_Alias) or host
+# (Host_Alias) type.
+#
+# === Parameters:
+#
+# [*type*]
+#
+# the type of alias to create. Can be one of user, cmnd or host.
+#
+# [*name*]
+#
+# the name of the alias.  name must be uppercase.
+#
+# [*value*]
+#
+# the value of the alias depends on the type above.
+#
+# user type: the value should be a comma separated or array of user and/or
+# groups to be associated with the alias
+#
+# host type: the value should be a comma separated or array of hostnames and/or
+# ips to be associated with the alias
+#
+# cmnd type: the value should be a comma separated or array of commands to be
+# associated with the alias
+#
+# [*target*]
+#
+# the target file to place this into within the sudoers.d directory. defaults to
+# puppet_sudoers.
+#
+# [*order*]
+#
+# the order within the file to place the alias. this is meant for advanced
+# configuration, and should not be needed in most cases.
+#
 define sudo::alias (  $type = undef,
                       $name = $title,
                       $value = undef,
