@@ -48,4 +48,4 @@ Support
 -------
 
 Please log tickets and issues at the
-[Projects site](https://github.com/arusso23/puppet-sudo/issues/)
+[Projects site](https://github.com/arusso/puppet-sudo/issues/)
