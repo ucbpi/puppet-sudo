@@ -2,7 +2,7 @@ name    'arusso-sudo'
 version '0.0.4'
 source 'https://github.com/arusso/puppet-sudo'
 author 'arusso'
-license 'none'
+license 'MIT'
 summary 'sudo rules management'
 description 'Manages sudo rules using the sudoers.d method, so each class or
   module can distinctly separate the particular sudoers file they put their

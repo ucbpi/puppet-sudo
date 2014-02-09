@@ -37,7 +37,12 @@ This module provides mechanisms to manage your sudoers entries
 License
 -------
 
-None
+See LICENSE file
+
+Copyright
+---------
+
+Copyright &copy; 2014 The Regents of the University of California
 
 Contact
 -------
